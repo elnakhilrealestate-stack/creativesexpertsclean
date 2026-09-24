@@ -86,6 +86,33 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </script>
 
 <link rel="stylesheet" href="assets/style.css">
+
+<!-- Conversion tracking events for Google Tag Manager / Google Ads -->
+<script>
+(function(){
+  window.dataLayer = window.dataLayer || [];
+  function pushEvent(name, extra){
+    var payload = extra || {};
+    payload.event = name;
+    payload.page_path = window.location.pathname;
+    payload.page_title = document.title;
+    window.dataLayer.push(payload);
+  }
+
+  document.addEventListener('click', function(e){
+    var link = e.target.closest ? e.target.closest('a[href]') : null;
+    if(!link) return;
+    var href = (link.getAttribute('href') || '').trim();
+    if(/^tel:/i.test(href)){
+      pushEvent('phone_click', {link_url: href});
+      return;
+    }
+    if(/(^|\/\/)(wa\.me|api\.whatsapp\.com)(\/|$)/i.test(href)){
+      pushEvent('whatsapp_click', {link_url: href});
+    }
+  });
+})();
+</script>
 </head>
 <body>
   <!-- Google Tag Manager (noscript) -->
@@ -668,6 +695,8 @@ function handleSubmit(e){
     "الخدمة: " + encodeURIComponent(service) + "%0A" +
     "المنطقة: " + encodeURIComponent(area) + "%0A" +
     "تفاصيل: " + encodeURIComponent(msg);
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({event:'lead_form_submit', page_path:window.location.pathname, page_title:document.title, form_id:'quote_form', service:service});
   window.open("https://wa.me/962777788011?text=" + text, "_blank");
   return false;
 }
